@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import InvoiceForm from './components/InvoiceForm';
+import PDFPreview from './components/PDFPreview';
 
-function App() {
+type InvoiceItem = {
+  description: string;
+  quantity: number;
+  price: number;
+};
+
+type InvoiceData = {
+  customerName: string;
+  invoiceNumber: string;
+  date: string;
+  items: InvoiceItem[];
+};
+
+const App: React.FC = () => {
+  const [invoiceData, setInvoiceData] = useState<InvoiceData>({
+    customerName: '',
+    invoiceNumber: '',
+    date: '',
+    items: [],
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: 'flex', gap: '20px' }}>
+      <div style={{ flex: 1 }}>
+        <InvoiceForm onUpdate={setInvoiceData} />
+      </div>
+      <div style={{ flex: 1 }}>
+        <PDFPreview data={invoiceData} />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
