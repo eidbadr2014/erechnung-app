@@ -1,108 +1,179 @@
 import React, { useState } from 'react';
+import { InvoiceData, InvoiceFormProps } from '../types';
+import './InvoiceForm.css';
 
-interface InvoiceData {
-  customerName: string;
-  invoiceNumber: string;
-  date: string;
-  items: { description: string; quantity: number; price: number }[];
-}
-
-interface Props {
-  onUpdate: (data: InvoiceData) => void;
-}
-
-const InvoiceForm: React.FC<Props> = ({ onUpdate }) => {
+const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) => {
   const [formData, setFormData] = useState<InvoiceData>({
     customerName: '',
     invoiceNumber: '',
     date: '',
-    items: [{ description: '', quantity: 1, price: 0 }],
+    validUntil: '',
+    title: '',
+    introText: 'hiermit unterbreiten wir Ihnen unser Angebot über folgende Positionen:',
+    vatRate: 19.00,
+    items: [{ description: '', quantity: 1, price: 0, articleNumber: '' }],
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
+  const [showPreview, setShowPreview] = useState(true);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    index?: number
+  ) => {
     const { name, value } = e.target;
 
     if (index !== undefined) {
       const items = [...formData.items];
       items[index] = { ...items[index], [name]: value };
-      setFormData({ ...formData, items });
+      const newData = { ...formData, items };
+      setFormData(newData);
+      onUpdate(newData);
     } else {
-      setFormData({ ...formData, [name]: value });
+      const newData = { ...formData, [name]: value };
+      setFormData(newData);
+      onUpdate(newData);
     }
-
-    onUpdate(formData);
   };
 
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { description: '', quantity: 1, price: 0 }],
+      items: [...formData.items, { description: '', quantity: 1, price: 0, articleNumber: '' }],
     });
   };
 
+  const handlePreviewToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShowPreview(e.target.checked);
+    onPreviewToggle(e.target.checked);
+  };
+
   return (
-    <div>
-      <h2>Invoice Form</h2>
-      <label>
-        Customer Name:
-        <input
-          type="text"
-          name="customerName"
-          value={formData.customerName}
-          onChange={handleInputChange}
-        />
-      </label>
-      <label>
-        Invoice Number:
-        <input
-          type="text"
-          name="invoiceNumber"
-          value={formData.invoiceNumber}
-          onChange={handleInputChange}
-        />
-      </label>
-      <label>
-        Date:
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleInputChange}
-        />
-      </label>
-      <h3>Items</h3>
-      {formData.items.map((item, index) => (
-        <div key={index}>
-          <label>
-            Description:
+    <div className="invoice-form">
+      <div className="form-header">
+        <h2>Angebot erstellen</h2>
+        <div className="preview-toggle">
+          <label className="toggle-switch">
+            <span className="toggle-label">Vorschau:</span>
+            <input
+              type="checkbox"
+              checked={showPreview}
+              onChange={handlePreviewToggle}
+            />
+            <span className="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div className="form-row">
+        <label>
+          Rechnungsvorlage:
+          <select name="template">
+            <option>Standardvorlage</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Kunde:
+          <select
+            name="customerName"
+            value={formData.customerName}
+            onChange={handleInputChange}
+          >
+            <option>Bitte wählen...</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Angebotsdatum:
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleInputChange}
+          />
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Gültig bis:
+          <input
+            type="date"
+            name="validUntil"
+            value={formData.validUntil}
+            onChange={handleInputChange}
+          />
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Titel:
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+          />
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Einleitungstext:
+          <input
+            type="text"
+            name="introText"
+            value={formData.introText}
+            onChange={handleInputChange}
+          />
+        </label>
+      </div>
+
+      <div className="items-section">
+        <div className="items-header">
+          <span>Art.Nr.</span>
+          <span>Bezeichnung</span>
+          <span>Menge</span>
+          <span>Einzelpreis (netto)</span>
+          <span>MwSt.</span>
+        </div>
+
+        {formData.items.map((item, index) => (
+          <div key={index} className="item-row">
+            <input
+              type="text"
+              name="articleNumber"
+              value={item.articleNumber}
+              onChange={(e) => handleInputChange(e, index)}
+            />
             <input
               type="text"
               name="description"
               value={item.description}
               onChange={(e) => handleInputChange(e, index)}
             />
-          </label>
-          <label>
-            Quantity:
             <input
               type="number"
               name="quantity"
               value={item.quantity}
               onChange={(e) => handleInputChange(e, index)}
             />
-          </label>
-          <label>
-            Price:
             <input
               type="number"
               name="price"
               value={item.price}
               onChange={(e) => handleInputChange(e, index)}
             />
-          </label>
-        </div>
-      ))}
-      <button onClick={addItem}>Add Item</button>
+            <span className="vat-rate">{formData.vatRate}%</span>
+          </div>
+        ))}
+        <button onClick={addItem}>Position hinzufügen</button>
+      </div>
     </div>
   );
 };

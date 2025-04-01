@@ -1,35 +1,42 @@
 import React, { useState } from 'react';
+import './App.css';
 import InvoiceForm from './components/InvoiceForm';
 import PDFPreview from './components/PDFPreview';
-
-type InvoiceItem = {
-  description: string;
-  quantity: number;
-  price: number;
-};
-
-type InvoiceData = {
-  customerName: string;
-  invoiceNumber: string;
-  date: string;
-  items: InvoiceItem[];
-};
+import { InvoiceData } from './types';
 
 const App: React.FC = () => {
-  const [invoiceData, setInvoiceData] = useState<InvoiceData>({
+  const [formData, setFormData] = useState<InvoiceData>({
     customerName: '',
     invoiceNumber: '',
     date: '',
-    items: [],
+    validUntil: '',
+    title: '',
+    introText: 'hiermit unterbreiten wir Ihnen unser Angebot über folgende Positionen:',
+    vatRate: 19.00,
+    items: []
   });
+  const [showPreview, setShowPreview] = useState(true);
+
+  const handleUpdate = (data: InvoiceData) => {
+    setFormData(data);
+  };
+
+  const handlePreviewToggle = (show: boolean) => {
+    setShowPreview(show);
+  };
 
   return (
-    <div style={{ display: 'flex', gap: '20px' }}>
-      <div style={{ flex: 1 }}>
-        <InvoiceForm onUpdate={setInvoiceData} />
-      </div>
-      <div style={{ flex: 1 }}>
-        <PDFPreview data={invoiceData} />
+    <div className="app-wrapper">
+      <div className="app-container">
+        <div className="form-container">
+          <InvoiceForm 
+            onUpdate={handleUpdate} 
+            onPreviewToggle={handlePreviewToggle}
+          />
+        </div>
+        <div className={`preview-container ${showPreview ? 'visible' : ''}`}>
+          <PDFPreview data={formData} />
+        </div>
       </div>
     </div>
   );
