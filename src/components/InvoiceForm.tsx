@@ -5,6 +5,8 @@ import './InvoiceForm.css';
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) => {
   const [formData, setFormData] = useState<InvoiceData>({
     customerName: '',
+    yourAddress: '',
+    offerNumber: '',
     invoiceNumber: '',
     date: '',
     validUntil: '',
@@ -17,14 +19,18 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) 
   const [showPreview, setShowPreview] = useState(true);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     index?: number
   ) => {
     const { name, value } = e.target;
 
     if (index !== undefined) {
       const items = [...formData.items];
-      items[index] = { ...items[index], [name]: value };
+      if (name === 'price' || name === 'quantity') {
+        items[index] = { ...items[index], [name]: value === '' ? 0 : parseFloat(value) };
+      } else {
+        items[index] = { ...items[index], [name]: value };
+      }
       const newData = { ...formData, items };
       setFormData(newData);
       onUpdate(newData);
@@ -75,14 +81,40 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) 
 
       <div className="form-row">
         <label>
-          Kunde:
-          <select
+          Kundenadresse:
+          <textarea
             name="customerName"
             value={formData.customerName}
             onChange={handleInputChange}
-          >
-            <option>Bitte wählen...</option>
-          </select>
+            rows={3}
+            placeholder="Kundenadresse eingeben..."
+          />
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Deine Adresse:
+          <textarea
+            name="yourAddress"
+            value={formData.yourAddress}
+            onChange={handleInputChange}
+            rows={3}
+            placeholder="Deine Adresse eingeben..."
+          />
+        </label>
+      </div>
+
+      <div className="form-row">
+        <label>
+          Angebot Nr.:
+          <input
+            type="text"
+            name="offerNumber"
+            value={formData.offerNumber}
+            onChange={handleInputChange}
+            placeholder="Angebot Nr. eingeben..."
+          />
         </label>
       </div>
 

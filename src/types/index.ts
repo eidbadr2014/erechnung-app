@@ -7,6 +7,8 @@ export type InvoiceItem = {
 
 export type InvoiceData = {
   customerName: string;
+  yourAddress: string;
+  offerNumber: string;
   invoiceNumber: string;
   date: string;
   validUntil: string;

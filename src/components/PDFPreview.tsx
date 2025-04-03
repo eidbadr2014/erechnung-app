@@ -15,6 +15,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 10,
   },
+  customerAddress: {
+    marginTop: 10,
+    fontSize: 10,
+  },
+  senderAddress: {
+    position: 'absolute',
+    top: 30,
+    right: 30,
+    fontSize: 10,
+    textAlign: 'right',
+    maxWidth: '40%',
+  },
   title: {
     fontSize: 20,
     marginBottom: 10,
@@ -51,18 +63,51 @@ const styles = StyleSheet.create({
 });
 
 const PDFPreview: React.FC<PDFPreviewProps> = ({ data }) => {
-  const formatCurrency = (amount: number) => `${amount.toFixed(2)} €`;
-  const calculateTotal = (quantity: number, price: number) => quantity * price;
-
+  const formatCurrency = (amount: number | string) => {
+    // Convert to number if it's a string
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    // Check if it's a valid number
+    return isNaN(numAmount) ? '0.00 €' : `${numAmount.toFixed(2)} €`;
+  };
+  const calculateTotal = (quantity: number | string, price: number | string) => {
+    // Convert to numbers if they're strings
+    const numQuantity = typeof quantity === 'string' ? parseFloat(quantity) : quantity;
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    // Check if they're valid numbers
+    return isNaN(numQuantity) || isNaN(numPrice) ? 0 : numQuantity * numPrice;
+  };
+  
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+  
   const MyDocument = (
     <Document>
       <Page size="A4" style={styles.page}>
+        <View style={styles.senderAddress}>
+          <Text>{data.yourAddress}</Text>
+        </View>
+        
         <View style={styles.header}>
-          <Text style={styles.documentInfo}>
-            Angebot Nr.: {data.invoiceNumber || '-'}{'\n'}
-            Datum: {data.date || '-'}{'\n'}
-            Gültig bis: {data.validUntil || '-'}
-          </Text>
+          <View style={styles.documentInfo}>
+            <Text>Angebot Nr.: {data.offerNumber || '-'}</Text>
+            <Text>Datum: {formatDate(data.date)}</Text>
+            <Text>Gültig bis: {formatDate(data.validUntil)}</Text>
+          </View>
+          
+          <View style={styles.customerAddress}>
+            <Text>{data.customerName}</Text>
+          </View>
           
           <Text style={styles.title}>{data.title || 'Angebot'}</Text>
           <Text style={styles.introText}>{data.introText}</Text>

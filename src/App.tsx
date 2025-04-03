@@ -7,6 +7,8 @@ import { InvoiceData } from './types';
 const App: React.FC = () => {
   const [formData, setFormData] = useState<InvoiceData>({
     customerName: '',
+    yourAddress: '',
+    offerNumber: '',
     invoiceNumber: '',
     date: '',
     validUntil: '',
