@@ -56,7 +56,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) 
   return (
     <div className="invoice-form">
       <div className="form-header">
-        <h2>Angebot erstellen</h2>
+        <h2>PDF Rechnung Generator Online</h2>
         <div className="preview-toggle">
           <label className="toggle-switch">
             <span className="toggle-label">Vorschau:</span>

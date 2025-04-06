@@ -55,6 +55,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
     fontSize: 10,
   },
+  totalRow: {
+    flexDirection: 'row',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    fontSize: 10,
+    fontWeight: 'bold',
+    backgroundColor: '#f8f8f8',
+  },
   colArticleNo: { width: '15%' },
   colDescription: { width: '40%' },
   colQuantity: { width: '15%', textAlign: 'right' },
@@ -133,6 +142,18 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ data }) => {
               </Text>
             </View>
           ))}
+          
+          <View style={styles.totalRow}>
+            <Text style={styles.colArticleNo}></Text>
+            <Text style={styles.colDescription}>Gesamtsumme</Text>
+            <Text style={styles.colQuantity}></Text>
+            <Text style={styles.colPrice}></Text>
+            <Text style={styles.colTotal}>
+              {formatCurrency(data.items.reduce((sum, item) => 
+                sum + calculateTotal(item.quantity, item.price), 0
+              ))}
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
