@@ -30,7 +30,9 @@ const App: React.FC = () => {
   return (
     <div className="app-wrapper">
       <div className="app-container">
+        
         <div className="form-container">
+
           <InvoiceForm 
             onUpdate={handleUpdate} 
             onPreviewToggle={handlePreviewToggle}
@@ -40,6 +42,9 @@ const App: React.FC = () => {
           <PDFPreview data={formData} />
         </div>
       </div>
+      Vibe coded by <a href="https://www.linkedin.com/in/eid-badr/">Eid Badr</a> | eid.badr@hotmail.com
+        <br/>
+        <br/>
     </div>
   );
 };
