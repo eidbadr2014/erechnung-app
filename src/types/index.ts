@@ -16,6 +16,7 @@ export type InvoiceData = {
   introText: string;
   vatRate: number;
   items: InvoiceItem[];
+  footer: string;
 };
 
 export interface InvoiceFormProps {

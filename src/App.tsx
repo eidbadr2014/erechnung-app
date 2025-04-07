@@ -15,7 +15,8 @@ const App: React.FC = () => {
     title: '',
     introText: 'hiermit unterbreiten wir Ihnen unser Angebot über folgende Positionen:',
     vatRate: 19.00,
-    items: []
+    items: [],
+    footer: '',
   });
   const [showPreview, setShowPreview] = useState(true);
 

@@ -14,6 +14,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate, onPreviewToggle }) 
     introText: 'hiermit unterbreiten wir Ihnen unser Angebot über folgende Positionen:',
     vatRate: 19.00,
     items: [{ description: '', quantity: 1, price: 0, articleNumber: '' }],
+    footer: '',
   });
 
   const [showPreview, setShowPreview] = useState(true);
