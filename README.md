@@ -1,4 +1,4 @@
-# [erechnung.eidbadr.com]
+# [http://erechnung.eidbadr.com]
 
 # Getting Started with Create React App
 
